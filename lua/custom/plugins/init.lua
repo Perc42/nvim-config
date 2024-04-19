@@ -9,7 +9,6 @@ return {
   'nvim-neotest/nvim-nio',
   'tpope/vim-rhubarb',
   'mbbill/undotree',
-  'ThePrimeagen/harpoon',
   'nvim-treesitter/nvim-treesitter-context',
   'letieu/btw.nvim',
 

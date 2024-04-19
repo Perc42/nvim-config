@@ -25,8 +25,6 @@ require('lazy').setup({
   -- Git related plugins
   'tpope/vim-fugitive',
 
-
-
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
 
@@ -278,7 +276,7 @@ vim.opt.cursorline = true
 -- See `:help vim.keymap.set()`
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 vim.keymap.set('n', '<leader>u', vim.cmd.UndotreeToggle, { desc = ' Toggle Undotree' })
-vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
+vim.keymap.set('n', '-', '<CMD>Oil<CR>', { desc = 'Open parent directory' })
 
 -- Terminal toggle comands
 vim.keymap.set('n', '<leader>t', function()
@@ -560,8 +558,8 @@ cmp.setup {
 -- vim: ts=2 sts=2 sw=2 et
 require('dap-python').setup '~/.virtualenvs/debugpy/bin/python'
 
-require("oil").setup()
+require('oil').setup()
 
-require('btw').setup({
-  text = "I use Neovim (BTW)",
-})
+require('btw').setup {
+  text = 'I use Neovim (BTW)',
+}

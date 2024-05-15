@@ -1,7 +1,3 @@
--- You can add your own plugins here or in other files in this directory!
---  I promise not to create any merge conflicts in this directory :)
---
--- See the kickstart.nvim README for more information
 return {
   'MunifTanjim/nui.nvim',
   'mfussenegger/nvim-dap',
@@ -11,13 +7,23 @@ return {
   'mbbill/undotree',
   'nvim-treesitter/nvim-treesitter-context',
   'letieu/btw.nvim',
-
+  'tpope/vim-fugitive',
+  'tpope/vim-sleuth',
   {
-    'stevearc/oil.nvim',
-    opts = {},
-    -- Optional dependencies
-    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    'stevearc/conform.nvim',
+    opts = {
+      notify_on_error = false,
+      format_on_save = {
+        timeout_ms = 500,
+        lsp_fallback = true,
+      },
+      formatters_by_ft = {
+        lua = { 'stylua' },
+      },
+    },
   },
+  { 'folke/which-key.nvim', opts = {} },
+
   {
     'smjonas/inc-rename.nvim',
     cmd = 'IncRename',
@@ -36,7 +42,6 @@ return {
     config = true,
   },
 
-  -- Refactoring tool
   {
     'ThePrimeagen/refactoring.nvim',
     keys = {

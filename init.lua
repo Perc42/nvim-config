@@ -169,11 +169,6 @@ vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 vim.keymap.set('n', '<leader>u', vim.cmd.UndotreeToggle, { desc = ' Toggle Undotree' })
 vim.keymap.set('n', '-', '<CMD>Oil<CR>', { desc = 'Open parent directory' })
 
-vim.keymap.set('n', '<leader>t', function()
-  vim.cmd 'terminal'
-  vim.cmd 'startinsert'
-end, { desc = ' Toggle Terminal' })
-
 vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv")
 vim.keymap.set('v', 'K', ":m '>-2<CR>gv=gv")
 vim.keymap.set('n', 'J', 'mzJ`z')
@@ -256,6 +251,7 @@ local function telescope_live_grep_open_files()
     prompt_title = 'Live Grep in Open Files',
   }
 end
+local builtin = require 'telescope.builtin'
 vim.keymap.set('n', '<leader>s/', telescope_live_grep_open_files, { desc = '[S]earch [/] in Open Files' })
 vim.keymap.set('n', '<leader>ss', require('telescope.builtin').builtin, { desc = '[S]earch [S]elect Telescope' })
 vim.keymap.set('n', '<leader>gf', require('telescope.builtin').git_files, { desc = 'Search [G]it [F]iles' })
@@ -266,7 +262,9 @@ vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc
 vim.keymap.set('n', '<leader>sG', ':LiveGrepGitRoot<cr>', { desc = '[S]earch by [G]rep on Git Root' })
 vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
 vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = '[S]earch [R]esume' })
-
+vim.keymap.set('n', '<leader>sn', function()
+  builtin.find_files { cwd = vim.fn.stdpath 'config' }
+end, { desc = '[S]earch [N]eovim files' })
 -- [[ Configure Treesitter ]]
 vim.defer_fn(function()
   require('nvim-treesitter.configs').setup {
@@ -414,3 +412,23 @@ require('oil').setup()
 require('btw').setup {
   text = 'I use Neovim (BTW)',
 }
+
+-- [Terminal Setup}
+local set = vim.opt_local
+
+vim.api.nvim_create_autocmd('TermOpen', {
+  group = vim.api.nvim_create_augroup('custom_term_open', {}),
+  callback = function()
+    set.number = false
+    set.relativenumber = false
+    set.scrolloff = 0
+  end,
+})
+vim.keymap.set('t', '<esc><esc>', '<c-><c-n>')
+vim.keymap.set('n', 'st', function()
+  vim.cmd.new()
+  vim.cmd.wincmd 'J'
+  vim.api.nvim_win_set_height(0, 12)
+  vim.wo.winfixheight = true
+  vim.cmd.terminal()
+end)

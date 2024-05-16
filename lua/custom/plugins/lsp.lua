@@ -1,25 +1,18 @@
 return {
   {
-    -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
     dependencies = {
-      -- Automatically install LSPs to stdpath for neovim
       'williamboman/mason.nvim',
       'williamboman/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
-
-      -- Useful status updates for LSP
-      -- Note: `opts = {}` is the same as calling `require('fidget').setup({})`
       {
         'j-hui/fidget.nvim',
         tag = 'legacy',
         opts = {},
       },
 
-      -- Additional lua configuration. Setup defore setting up lspconfig for lua_ls.
       'folke/neodev.nvim',
 
-      -- Hover guide for function signatures.
       'ray-x/lsp_signature.nvim',
     },
     opts = {
@@ -29,7 +22,6 @@ return {
         },
         virtual_text = false,
       },
-      -- autoformat = true,
       servers = {
         clangd = {},
         -- gopls = {},
@@ -72,23 +64,6 @@ return {
           },
         },
         html = {},
-        -- pylsp = {
-        -- 	pylsp = {
-        -- 		plugins = {
-        -- 			black = { enabled = true },
-        -- 			-- disable linting in favor of ruff_lsp
-        -- 			mccabe = { enabled = false },
-        -- 			pycodestyle = {
-        -- 				enabled = false,
-        -- 				-- ignore = { "W391", "E226", "E501" },
-        -- 				-- maxLineLength = 88,
-        -- 			},
-        -- 			pyflakes = { enabled = false },
-        -- 			pylint = { enabled = false },
-        -- 		},
-        -- 	},
-        -- },
-        -- jedi_language_server = {}, -- Moved outside of loop to disable diagnostics.
         ruff_lsp = {},
         lua_ls = {
           Lua = {
@@ -157,9 +132,6 @@ return {
     },
     config = function(_, opts)
       local on_attach = function(_, bufnr)
-        -- Attach the server to Navbuddy only if server is not ruff_lsp.
-        -- ruff_lsp does not support documentSymbols.
-
         local nmap = function(keys, func, desc)
           if desc then
             desc = 'LSP: ' .. desc
@@ -178,12 +150,10 @@ return {
         nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
         nmap('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
 
-        -- See `:help K` for why this keymap
         nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
         vim.keymap.set({ 'n', 'i' }, '<C-k>', vim.lsp.buf.signature_help, { buffer = bufnr, desc = 'Signature Help' })
         nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
 
-        -- Lesser used LSP functionality
         nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
         nmap('<leader>wa', vim.lsp.buf.add_workspace_folder, '[W]orkspace [A]dd Folder')
         nmap('<leader>wr', vim.lsp.buf.remove_workspace_folder, '[W]orkspace [R]emove Folder')
@@ -191,35 +161,20 @@ return {
           print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
         end, '[W]orkspace [L]ist Folders')
 
-        -- Create a command `:Format` local to the LSP buffer
         vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
           vim.lsp.buf.format()
         end, { desc = 'Format current buffer with LSP' })
         nmap('<leader>bf', '<cmd>Format<CR>', '[B]uffer [F]ormat')
       end
 
-      -- Add a border to the hover frame.
       vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, { border = 'rounded' })
-
-      -- require("lsp_signature").on_attach({
-      --   bind = true, -- This is mandatory, otherwise border config won't get registered.
-      --   handler_opts = {
-      --     border = "rounded",
-      --   },
-      --   hint_enable = false,
-      --   hint_prefix = "",
-      -- })
-      -- , bufnr) -- bufnr only required when using toggle_key function
-
       require('neodev').setup()
 
       vim.diagnostic.config(opts.diagnostics)
 
-      -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
       local capabilities = vim.lsp.protocol.make_client_capabilities()
       capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
-      -- Ensure the servers above are installed
       local mason_lspconfig = require 'mason-lspconfig'
 
       mason_lspconfig.setup {
@@ -236,8 +191,6 @@ return {
         end,
       }
 
-      -- Moved out of mason_lspconfig handlers loop because diagnostics
-      -- were not being disabled.
       require('lspconfig').jedi_language_server.setup {
         capabilities = capabilities,
         on_attach = on_attach,
@@ -246,7 +199,6 @@ return {
         },
       }
 
-      -- Workaround for warning when using clang-format (via null-ls) with clangd lsp.
       capabilities.offsetEncoding = { 'utf-16' }
 
       require('lspconfig').clangd.setup {
@@ -260,7 +212,6 @@ return {
   },
 
   {
-    -- From LazyVim's lua/lazyvim/plugins/lsp/init.lua
     'williamboman/mason.nvim',
     cmd = 'Mason',
     keys = { { '<leader>cm', '<cmd>Mason<cr>', desc = 'Mason' } },

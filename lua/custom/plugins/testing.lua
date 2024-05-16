@@ -13,10 +13,6 @@ return {
       'nvim-neotest/neotest-plenary',
     },
     opts = {
-      -- Can be a list of adapters like what neotest expects,
-      -- or a list of adapter names,
-      -- or a table of adapter names, mapped to adapter configs.
-      -- The adapter will then be automatically loaded with the config.
       adapters = {
         ['neotest-plenary'] = {},
         ['neotest-python'] = {},
@@ -57,7 +53,6 @@ return {
       vim.diagnostic.config({
         virtual_text = {
           format = function(diagnostic)
-            -- Replace newline and tab characters with space for more compact diagnostics
             local message = diagnostic.message:gsub('\n', ' '):gsub('\t', ' '):gsub('%s+', ' '):gsub('^%s+', '')
             return message
           end,
@@ -66,7 +61,6 @@ return {
 
       if require('lazyvim.util').has 'trouble.nvim' then
         opts.consumers = opts.consumers or {}
-        -- Refresh and auto close trouble after running tests
         ---@type neotest.Consumer
         opts.consumers.trouble = function(client)
           client.listeners.results = function(adapter_id, results, partial)
@@ -123,16 +117,63 @@ return {
 
       require('neotest').setup(opts)
     end,
-  -- stylua: ignore
     keys = {
-      { ";tt", function() require("neotest").run.run(vim.fn.expand("%")) end, desc = "Run File" },
-      { ";tr", function() require("neotest").run.run() end, desc = "Run Nearest" },
-      { ";tT", function() require("neotest").run.run(vim.loop.cwd()) end, desc = "Run All Test Files" },
-      { ";tl", function() require("neotest").run.run_last() end, desc = "Run Last" },
-      { ";ts", function() require("neotest").summary.toggle() end, desc = "Toggle Summary" },
-      { ";to", function() require("neotest").output.open({ enter = true, auto_close = true }) end, desc = "Show Output" },
-      { ";tO", function() require("neotest").output_panel.toggle() end, desc = "Toggle Output Panel" },
-      { ";tS", function() require("neotest").run.stop() end, desc = "Stop" },
+      {
+        ';tt',
+        function()
+          require('neotest').run.run(vim.fn.expand '%')
+        end,
+        desc = 'Run File',
+      },
+      {
+        ';tr',
+        function()
+          require('neotest').run.run()
+        end,
+        desc = 'Run Nearest',
+      },
+      {
+        ';tT',
+        function()
+          require('neotest').run.run(vim.loop.cwd())
+        end,
+        desc = 'Run All Test Files',
+      },
+      {
+        ';tl',
+        function()
+          require('neotest').run.run_last()
+        end,
+        desc = 'Run Last',
+      },
+      {
+        ';ts',
+        function()
+          require('neotest').summary.toggle()
+        end,
+        desc = 'Toggle Summary',
+      },
+      {
+        ';to',
+        function()
+          require('neotest').output.open { enter = true, auto_close = true }
+        end,
+        desc = 'Show Output',
+      },
+      {
+        ';tO',
+        function()
+          require('neotest').output_panel.toggle()
+        end,
+        desc = 'Toggle Output Panel',
+      },
+      {
+        ';tS',
+        function()
+          require('neotest').run.stop()
+        end,
+        desc = 'Stop',
+      },
     },
   },
 }

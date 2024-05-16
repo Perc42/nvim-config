@@ -1,7 +1,5 @@
 return {
   'MunifTanjim/nui.nvim',
-  'mfussenegger/nvim-dap',
-  'mfussenegger/nvim-dap-python',
   'nvim-neotest/nvim-nio',
   'tpope/vim-rhubarb',
   'mbbill/undotree',

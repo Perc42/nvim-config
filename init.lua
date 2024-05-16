@@ -83,18 +83,6 @@ require('lazy').setup({
   },
 
   {
-    'nvim-lualine/lualine.nvim',
-    opts = {
-      options = {
-        icons_enabled = false,
-        theme = 'auto',
-        component_separators = '|',
-        section_separators = '',
-      },
-    },
-  },
-
-  {
     'lukas-reineke/indent-blankline.nvim',
     main = 'ibl',
     opts = {},
@@ -404,6 +392,22 @@ cmp.setup.filetype({ 'sql' }, {
     { name = 'buffer' },
   },
 })
+
+for _, ft_path in ipairs(vim.api.nvim_get_runtime_file('lua/custom/snippets/*.lua', true)) do
+  loadfile(ft_path)()
+end
+
+vim.keymap.set({ 'i', 's' }, '<c-k>', function()
+  if ls.expand_or_jumpable() then
+    ls.expand_or_jump()
+  end
+end, { silent = true })
+
+vim.keymap.set({ 'i', 's' }, '<c-j>', function()
+  if ls.jumpable(-1) then
+    ls.jump(-1)
+  end
+end, { silent = true })
 
 require('dap-python').setup '~/.virtualenvs/debugpy/bin/python'
 

@@ -58,4 +58,5 @@ return {
     },
     opts = {},
   },
+  'fatih/vim-go',
 }
